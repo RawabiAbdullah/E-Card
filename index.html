@@ -1,0 +1,195 @@
+<!doctype html>
+<html lang="en">
+
+  <head>
+    <meta charset="utf-8">
+    <title>HungerStation</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+      integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <style>
+      @font-face {
+        font-family: hs-font-regular;
+        src: url(fonts/HungerStation-Regular.ttf);
+      }
+
+      body {
+        width: 100%;
+        direction: rtl;
+        font-family: hs-font-regular;
+      }
+
+      nav {
+        background-color: #ffd128;
+        padding: 1rem 5rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .text_header{
+        margin-top: 10px;
+        font-size: 24px;
+        color: #582813;
+      }
+
+      #wrapper {
+        position: relative;
+        width: 800px;
+        height: 200px;
+      }
+
+      ::-webkit-input-placeholder {
+        color: grey;
+        font-size: 20px;
+      }
+
+      #input_1 {
+        position: absolute;
+        top: 32.5rem;
+        left: 11.9rem;
+        width: 18rem;
+        height: 2.6rem;
+        z-index: 2;
+        border: none;
+        border-color: transparent;
+        text-align: right;
+        color: transparent;
+        font-size: 34px;
+        outline: none;
+        background-color: transparent;
+      }
+
+      footer {
+        margin-top: 37rem;
+      }
+
+      button {
+        background-color: #ffd128;
+        border: none;
+        padding: 11px 42px;
+        border-radius: 8px;
+        color: #582813;
+        font-size: 16px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <nav>
+      <div class="nav-brand">
+        <img src="hungerstation-logo.svg" alt="">
+      </div>
+
+    </nav>
+
+    <div class="container">
+
+      <div id="eid-mubarak" class="row justify-content-md-center text_header">
+        يوم وطني سعيد
+        &hearts;
+      </div>
+      <div class="row justify-content-md-center">
+        <button onclick="switchlang()">
+          switch language
+        </button>
+
+      </div>
+
+      <div class="row justify-content-md-center">
+
+        <div class="col-md-auto  text-center">
+          <form class="row test" style="margin-top: 24px">
+            <img id="national_day_img" style="display:none" src="national_day_card_ar.jpg" >
+            <img id="" style="display:none" src="national_day_card_en.jpg" >
+            <input id="input_1" maxlength="30" type="text" placeholder="name/الاسم" autocomplete="off">
+
+            <div id="wrapper">
+              <canvas id="canvas" style="width: inherit" />
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <footer class="row justify-content-md-center">
+
+      <button onclick="download_image()">
+        Download
+      </button>
+    </footer>
+
+    <script>
+      var img = $('#national_day_img');
+      var image = document.getElementById('national_day_img');
+      window.onload = function () {
+        image = document.getElementById('national_day_img');
+        changeImage();
+      }
+
+
+      function download_image() {
+        if (canvas.toBlob) {
+          canvas.toBlob(function (blob) {
+            var url = URL.createObjectURL(blob);
+            execDownload(url);
+          }, 'image/jpeg', 1.0);
+        } else {
+          var url = canvas.toDataURL();
+
+          execDownload(url);
+        }
+      }
+
+      function execDownload(url) {
+        var a = document.createElement('a');
+        a.href = url;
+        if (canvas.msToBlob) {
+          var blob = canvas.msToBlob();
+          window.navigator.msSaveBlob(blob, 'save.jpg');
+        } else if (a.download === '') {
+          a.download = 'save.jpg';
+          var evt = new MouseEvent('click', { view: window, bubbles: false });
+          a.dispatchEvent(evt);
+          // alert('wwwwww');//chrome //safari laptop //firefox //chrome android
+        } else if (navigator.userAgent.indexOf('Safari') > -1) {
+          alert('جاري معالجة الصورة، من فضلك احفظ الصورة');
+          // window.open(url, '_blank'); //open chrome in iphone // safari iphon put dpsent save!!!
+          window.location.assign(url);
+        }
+      }
+
+      function switchlang() {
+        if (image.src.match("national_day_card_en")){
+          image.src = "national_day_card_ar.jpg";
+          $('#eid-mubarak').html("يوم وطني سعيد &hearts;");
+        }else{
+          image.src = "national_day_card_en.jpg";
+          $('#eid-mubarak').html("&hearts; happy National Day");
+        }
+
+        $('#input_1').val('');
+          setTimeout(function () {
+            changeImage();
+        }, 1000);
+      }
+
+      function changeImage(){
+        var canvas = document.getElementById('canvas'), ctx = canvas.getContext('2d');
+        canvas.width = img.width();
+        canvas.height = img.height();
+        ctx.drawImage(img.get(0), 0, 0);
+        ctx.font = "70pt hs-font-regular";
+        ctx.textAlign = 'right';
+
+        $(document).on('input', '#input_1', function () {
+          //redraw image
+          ctx.drawImage(img.get(0), 0, 0);
+          //refill text
+          ctx.fillStyle = "#6e3e2f";
+          ctx.fillText($('#input_1').val(), 1400, 1450);
+        });
+      }
+
+    </script>
+  </body>
+</html>
